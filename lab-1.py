@@ -1,40 +1,25 @@
-def encrypt(text, key):
-    result = ""
+from collections import Counter
+import string
 
-    for ch in text:
-        if ch.isalpha():
-            if ch.isupper():
-                result += chr((ord(ch) - ord('A') + key) % 26 + ord('A'))
-            else:
-                result += chr((ord(ch) - ord('a') + key) % 26 + ord('a'))
-        else:
-            result += ch
+plain_alphabets = string.ascii_lowercase
+cipher_alphabets = "qwertyuiopasdfghjklzxcvbnm"
 
-    return result
+encrypt_dict = dict(zip(plain_alphabets, cipher_alphabets))
+decrypt_dict = dict(zip(cipher_alphabets, plain_alphabets))
 
+plaintext = input("Enter Plaintext: ").lower()
 
-def decrypt(text, key):
-    return encrypt(text, -key)
+ciphertext = ''.join(encrypt_dict.get(ch, ch) for ch in plaintext)
+decrypted_text = ''.join(decrypt_dict.get(ch, ch) for ch in ciphertext)
 
+print("\nCiphertext:", ciphertext)
+print("Decrypted Text:", decrypted_text)
 
-def brute_force(cipher):
-    print("\nAll Possible Decryptions:\n")
+plain_freq = Counter(plaintext)
+cipher_freq = Counter(ciphertext)
 
-    for key in range(1, 26):
-        print("Key", key, ":", decrypt(cipher, key))
+print("\nFrequency Analysis")
+print("Alphabet\tPlain\tCipher")
 
-
-# ---------------- Main Program ----------------
-
-plaintext = input("Enter Plaintext : ")
-key = int(input("Enter Key (1-25) : "))
-
-ciphertext = encrypt(plaintext, key)
-
-print("\nEncrypted Text :", ciphertext)
-
-decrypted = decrypt(ciphertext, key)
-
-print("Decrypted Text :", decrypted)
-
-brute_force(ciphertext)
+for ch in string.ascii_lowercase:
+    print(f"{ch}\t\t{plain_freq[ch]}\t{cipher_freq[ch]}")
